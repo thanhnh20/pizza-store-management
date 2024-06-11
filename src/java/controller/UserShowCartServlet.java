@@ -5,16 +5,15 @@
  */
 package controller;
 
+import cart.CartList;
 import constants.Constant;
-import dao.AccountDAO;
-import dto.AccountDTO;
+import dto.ProductDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import javax.naming.NamingException;
+import java.util.List;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +23,9 @@ import javax.servlet.http.HttpSession;
  *
  * @author ASUS
  */
-@WebServlet(name = "StartUpServlet", urlPatterns = {"/StartUpServlet"})
-public class StartUpServlet extends HttpServlet {
-    
+@WebServlet(name = "UserShowCartServlet", urlPatterns = {"/UserShowCartServlet"})
+public class UserShowCartServlet extends HttpServlet {
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,38 +38,18 @@ public class StartUpServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = Constant.Controller.USER_HOME_PAGE_CONTROLLER;
-        try{
-            //get cookies
-            Cookie[] listCookie = request.getCookies();
-            if(listCookie != null){
-                Cookie cookie = listCookie[listCookie.length - 1];
-                String username = cookie.getName();
-                String password = cookie.getValue();
-                //check login with name and value of cookie
-                AccountDAO accountDAO = new AccountDAO();
-                boolean result = accountDAO.checkLogin(username, password);
-                
-                if(result){
-                    AccountDTO accountDTO = accountDAO.getAccount(username); 
-                    //check role
-                    if (accountDTO.getRole() == 1) {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("ADMIN_ROLE", accountDTO);
-                        url = Constant.Controller.STAFF_HOME_PAGE_CONTROLLER;
-                    } else {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("USER_ROLE", accountDTO);
-                    }
-                }
-            }
-        }catch(NamingException ex){
-            log("NamingException at StartUpServlet " + ex.getMessage());
-        }catch(SQLException ex){
-            log("SQLException at StartUpServlet " + ex.getMessage());
-        }finally{
-            response.sendRedirect(url);
+
+        HttpSession session = request.getSession(false);
+        String url = Constant.Page.SIGN_IN_PAGE;
+        List<ProductDTO> listCart = null;
+        CartList cart = (CartList) session.getAttribute("CART");
+        if (cart != null) {
+            listCart = cart.getCartList();
         }
+        url = Constant.Page.CART_PAGE;
+        request.setAttribute("PRODUCTS_IN_CART", listCart);
+        RequestDispatcher rd = request.getRequestDispatcher(url);
+        rd.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

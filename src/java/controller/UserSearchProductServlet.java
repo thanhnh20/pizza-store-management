@@ -6,21 +6,29 @@
 package controller;
 
 import constants.Constant;
+import dao.ProductDAO;
+import dto.ProductDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author ASUS
  */
-@WebServlet(name = "DispatchController", urlPatterns = {"/DispatchController"})
-public class DispatchController extends HttpServlet {
+@WebServlet(name = "UserSearchProductServlet", urlPatterns = {"/UserSearchProductServlet"})
+public class UserSearchProductServlet extends HttpServlet {
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,67 +41,59 @@ public class DispatchController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        String url = "";
-        String action = request.getParameter("btnAction");
-        try{      
-            if(action == null){
-                action = "";
+
+        String searchValue = request.getParameter("txtSearchValue");
+        String srange = request.getParameter("range");
+        int range = 0;
+        if (!srange.isEmpty()) {
+            range = Integer.parseInt(srange);
+        }
+        String url = Constant.Page.SIGN_IN_PAGE;
+        try {
+            ProductDAO productDAO = new ProductDAO();
+            List<ProductDTO> listProduct = productDAO.getAllProduct();
+            List<ProductDTO> listSearch = new ArrayList<ProductDTO>();
+            int min = 0;
+            int max = 1000;
+            if (range == 1) {
+                max = 20;
+            } else if (range == 2) {
+                min = 20;
+                max = 50;
+            } else if (range == 3) {
+                min = 50;
+                max = 1000;
             }
-            switch(action){
-                case Constant.Action.SIGN_IN: {
-                    url = Constant.Controller.SIGN_IN_CONTROLLER;
-                    break;
+            for (ProductDTO dto : listProduct) {
+                boolean check = true;
+                if (!searchValue.isEmpty() && !(dto.getProductName().trim().toLowerCase().contains(searchValue.trim().toLowerCase()))) {
+                    check = false;
                 }
-                case Constant.Action.SIGN_UP: {
-                    url = Constant.Controller.SIGN_UP_CONTROLLER;
-                    break;
+                if (range != 0 && !(min <= dto.getPrice() && dto.getPrice() < max)) {
+                    check = false;
                 }
-                case Constant.Action.LOG_OUT: {
-                    url = Constant.Controller.LOG_OUT_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_HOME_PAGE: {
-                    url = Constant.Controller.USER_HOME_PAGE_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_SEARCH_PRODUCT: {
-                    url = Constant.Controller.USER_SEARCH_PRODUCT_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_PROFILE: {
-                    url = Constant.Controller.USER_PROFILE_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_UPDATE_PROFILE: {
-                    url = Constant.Controller.USER_UPDATE_PROFILE_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_ADD_TO_CART: {
-                    url = Constant.Controller.USER_ADD_TO_CART_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_SHOW_CART: {
-                    url = Constant.Controller.USER_SHOW_CART_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_REMOVE_CART: {
-                    url = Constant.Controller.USER_REMOVE_ITEMS_CART_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_CHECK_OUT_CART: {
-                    url = Constant.Controller.USER_CHECK_OUT_CART_CONTROLLER;
-                    break;
-                }
-                default :{
-                    url = Constant.Controller.START_UP_CONTROLLER;
+                if (check) {
+                    listSearch.add(dto);
                 }
             }
-        }finally{
+            
+            int numberBook = listProduct.size();
+            int numberResult = listSearch.size();
+
+            url = Constant.Page.USER_HOME_PAGE;
+            request.setAttribute("rangeSelected", range);
+//            request.setAttribute("NUMBER_BOOK", numberBook);
+            request.setAttribute("NUMBER_RESULT", numberResult);
+            request.setAttribute("LIST_PRODUCT", listSearch);
             RequestDispatcher rd = request.getRequestDispatcher(url);
             rd.forward(request, response);
+        } catch (NamingException ex) {
+            log("NamingException at UserSearchBookServlet " + ex.getMessage());
+        } catch (SQLException ex) {
+            log("SQLException at UserSearchBookServlet " + ex.getMessage());
         }
     }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

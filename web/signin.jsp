@@ -20,7 +20,7 @@
     <body class="text-center">
         <div class="form-signin">
             <div>
-                <a href="DispatchController?btnAction=HomePage">
+                <a href="DispatchController?btnAction=UserHomePage">
                     <img src="image/logo.png" alt="" class="image"><br>
                 </a>
             </div>
@@ -60,10 +60,10 @@
                     <label for="flexCheckDefault">Remember Me</label>
                 </div>
                 <div class="acction">
-                    <button class="btn btn-outline-danger" type="submit" name="btnAction" value="Login">
+                    <button class="btn btn-outline-danger" type="submit" name="btnAction" value="SignIn">
                         Sign In
                     </button>
-                    <a href="register.jsp" class="btn btn-outline-primary" type="submit">
+                    <a href="signup.jsp" class="btn btn-outline-primary" type="submit">
                         Sign Up
                     </a>     
                 </div>

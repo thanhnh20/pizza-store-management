@@ -5,22 +5,29 @@
  */
 package controller;
 
+import cart.CartList;
 import constants.Constant;
+import dao.ProductDAO;
+import dto.AccountDTO;
+import dto.ProductDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author ASUS
  */
-@WebServlet(name = "DispatchController", urlPatterns = {"/DispatchController"})
-public class DispatchController extends HttpServlet {
+@WebServlet(name = "UserAddToCartServlet", urlPatterns = {"/UserAddToCartServlet"})
+public class UserAddToCartServlet extends HttpServlet {
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,67 +40,43 @@ public class DispatchController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        String url = "";
-        String action = request.getParameter("btnAction");
-        try{      
-            if(action == null){
-                action = "";
-            }
-            switch(action){
-                case Constant.Action.SIGN_IN: {
-                    url = Constant.Controller.SIGN_IN_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.SIGN_UP: {
-                    url = Constant.Controller.SIGN_UP_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.LOG_OUT: {
-                    url = Constant.Controller.LOG_OUT_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_HOME_PAGE: {
-                    url = Constant.Controller.USER_HOME_PAGE_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_SEARCH_PRODUCT: {
+
+        String productId = request.getParameter("productId");
+        HttpSession session = request.getSession(false);
+        String url = Constant.Page.SIGN_IN_PAGE;
+        try {
+            if (session != null) {
+                AccountDTO accountDTO = (AccountDTO) session.getAttribute("USER_ROLE");
+                if (accountDTO != null) {
+                    ProductDAO productDAO = new ProductDAO();
+                    //get book add
+                    ProductDTO bookDTO = productDAO.getProductById(Integer.parseInt(productId));
+
+                    //add book to cart                    
+                    CartList cartList = (CartList) session.getAttribute("CART");
+                    if (cartList == null) {
+                        cartList = new CartList();
+                    }
+                    cartList.addBookToCart(bookDTO);
+                    session.setAttribute("CART", cartList);
                     url = Constant.Controller.USER_SEARCH_PRODUCT_CONTROLLER;
-                    break;
+                    String msg = "Add product to cart successfull";
+                    request.setAttribute("MSG", msg);
+                    RequestDispatcher rd = request.getRequestDispatcher(url);
+                    rd.forward(request, response);
+                } else {
+                    response.sendRedirect(url);
                 }
-                case Constant.Action.USER_PROFILE: {
-                    url = Constant.Controller.USER_PROFILE_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_UPDATE_PROFILE: {
-                    url = Constant.Controller.USER_UPDATE_PROFILE_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_ADD_TO_CART: {
-                    url = Constant.Controller.USER_ADD_TO_CART_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_SHOW_CART: {
-                    url = Constant.Controller.USER_SHOW_CART_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_REMOVE_CART: {
-                    url = Constant.Controller.USER_REMOVE_ITEMS_CART_CONTROLLER;
-                    break;
-                }
-                case Constant.Action.USER_CHECK_OUT_CART: {
-                    url = Constant.Controller.USER_CHECK_OUT_CART_CONTROLLER;
-                    break;
-                }
-                default :{
-                    url = Constant.Controller.START_UP_CONTROLLER;
-                }
+            } else {
+                response.sendRedirect(url);
             }
-        }finally{
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
+        } catch (NamingException ex) {
+            log("NamingException at AddBookToCartServlet " + ex.getMessage());
+        } catch (SQLException ex) {
+            log("SQLException at AddBookToCartServlet " + ex.getMessage());
         }
     }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

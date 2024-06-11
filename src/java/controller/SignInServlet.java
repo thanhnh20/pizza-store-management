@@ -8,10 +8,12 @@ package controller;
 import constants.Constant;
 import dao.AccountDAO;
 import dto.AccountDTO;
+import error.AccountErrorDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -24,8 +26,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author ASUS
  */
-@WebServlet(name = "StartUpServlet", urlPatterns = {"/StartUpServlet"})
-public class StartUpServlet extends HttpServlet {
+@WebServlet(name = "SignInServlet", urlPatterns = {"/SignInServlet"})
+public class SignInServlet extends HttpServlet {
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,37 +41,67 @@ public class StartUpServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = Constant.Controller.USER_HOME_PAGE_CONTROLLER;
-        try{
-            //get cookies
-            Cookie[] listCookie = request.getCookies();
-            if(listCookie != null){
-                Cookie cookie = listCookie[listCookie.length - 1];
-                String username = cookie.getName();
-                String password = cookie.getValue();
-                //check login with name and value of cookie
+        
+        //get parameter        
+        String username = request.getParameter("txtUsername");
+        String password = request.getParameter("txtPassword");
+        String checkRemember = request.getParameter("checkRemember");
+        System.out.println(username + "\n" + password);
+                
+        String url = Constant.Page.SIGN_IN_PAGE;
+        try {
+            AccountErrorDTO error = new AccountErrorDTO();
+            boolean foundError = false;
+            // check username is not empty
+            if (username.trim().length() == 0) {
+                error.setUsernameEmpty("Please enter username");
+                foundError = true;
+            }
+            //check password is not empty
+            if (password.trim().length() == 0) {
+                error.setPasswordEmpty("Please enter password");
+                foundError = true;
+            }
+            //set error if found
+            if (foundError) {
+                request.setAttribute("ERROR", error);
+                RequestDispatcher rd = request.getRequestDispatcher(url);
+                rd.forward(request, response);
+            } else {
                 AccountDAO accountDAO = new AccountDAO();
                 boolean result = accountDAO.checkLogin(username, password);
-                
-                if(result){
-                    AccountDTO accountDTO = accountDAO.getAccount(username); 
+                if (result) {
+                    AccountDTO accountDTO = accountDAO.getAccount(username);
+                    // add cookie                 
+                    if (checkRemember != null) {
+                        Cookie cookie = new Cookie(username, password);
+                        cookie.setMaxAge(60 * 1);
+                        response.addCookie(cookie);
+                    }
                     //check role
                     if (accountDTO.getRole() == 1) {
                         HttpSession session = request.getSession();
                         session.setAttribute("ADMIN_ROLE", accountDTO);
                         url = Constant.Controller.STAFF_HOME_PAGE_CONTROLLER;
+                        response.sendRedirect(url);
                     } else {
                         HttpSession session = request.getSession();
                         session.setAttribute("USER_ROLE", accountDTO);
+                        url = Constant.Controller.USER_HOME_PAGE_CONTROLLER;
+                        response.sendRedirect(url);
                     }
+                } else {
+                    //set error account
+                    error.setWrongAccount("Your username or password invalid");
+                    request.setAttribute("ERROR", error);
+                    RequestDispatcher rd = request.getRequestDispatcher(url);
+                    rd.forward(request, response);
                 }
             }
-        }catch(NamingException ex){
-            log("NamingException at StartUpServlet " + ex.getMessage());
-        }catch(SQLException ex){
-            log("SQLException at StartUpServlet " + ex.getMessage());
-        }finally{
-            response.sendRedirect(url);
+        } catch (NamingException ex) {
+            log("LoginController_NamingException " + ex.getMessage());
+        } catch (SQLException ex) {
+            log("LoginController_SQLException " + ex.getMessage());
         }
     }
 

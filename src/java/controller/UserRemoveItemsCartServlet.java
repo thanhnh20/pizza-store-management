@@ -5,13 +5,13 @@
  */
 package controller;
 
-import dao.ProductDAO;
+import cart.CartList;
+import constants.Constant;
+import dto.AccountDTO;
 import dto.ProductDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.List;
-import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,10 +24,9 @@ import javax.servlet.http.HttpSession;
  *
  * @author ASUS
  */
-@WebServlet(name = "HomePageServlet", urlPatterns = {"/HomePageServlet"})
-public class HomePageServlet extends HttpServlet {
-    private final String LOGIN_PAGE = "login.jsp";
-    private final String USER_PAGE = "homepage.jsp";
+@WebServlet(name = "UserRemoveItemsCartServlet", urlPatterns = {"/UserRemoveItemsCartServlet"})
+public class UserRemoveItemsCartServlet extends HttpServlet {
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -40,22 +39,35 @@ public class HomePageServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+
+        String url = Constant.Page.SIGN_IN_PAGE;
+        String[] listItems = request.getParameterValues("checkedItems");
         HttpSession session = request.getSession(false);
-        String url = LOGIN_PAGE;
-        try {
-            ProductDAO bookDAO = new ProductDAO();
-            List<ProductDTO> listProduct = bookDAO.getAllProduct();
-            int numberResult = listProduct.size();
-            url = USER_PAGE;
-            request.setAttribute("NUMBER_RESULT", numberResult);
-            request.setAttribute("LIST_PRODUCT", listProduct);
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
-        } catch (NamingException ex) {
-            log("NamingException at ShowListBookToUserServlet " + ex.getMessage());
-        } catch (SQLException ex) {
-            log("SQLException at ShowListBookToUserServlet " + ex.getMessage());
+        if (session != null) {
+            AccountDTO accountDTO = (AccountDTO) session.getAttribute("USER_ROLE");
+            if (accountDTO != null) {
+                CartList cartList = (CartList) session.getAttribute("CART");
+                List<ProductDTO> listCart = null;
+                if (cartList != null) {
+                    if (listItems != null) {
+                        cartList.removeFromCart(listItems);
+                    } else {
+                        String msg = "Please select items";
+                        request.setAttribute("MSG", msg);
+                    }
+                    listCart = cartList.getCartList();
+                }
+                url = Constant.Page.CART_PAGE;
+                request.setAttribute("PRODUCTS_IN_CART", listCart);
+                RequestDispatcher rd = request.getRequestDispatcher(url);
+                rd.forward(request, response);
+            } else {
+                response.sendRedirect(url);
+            }
+        } else {
+            response.sendRedirect(url);
         }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

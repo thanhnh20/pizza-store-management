@@ -6,15 +6,14 @@
 package controller;
 
 import constants.Constant;
-import dao.AccountDAO;
+import dao.ProductDAO;
 import dto.AccountDTO;
+import dto.ProductDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import javax.naming.NamingException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +23,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author ASUS
  */
-@WebServlet(name = "StartUpServlet", urlPatterns = {"/StartUpServlet"})
-public class StartUpServlet extends HttpServlet {
-    
+@WebServlet(name = "StaffHomePageServlet", urlPatterns = {"/StaffHomePageServlet"})
+public class StaffHomePageServlet extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,37 +37,28 @@ public class StartUpServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = Constant.Controller.USER_HOME_PAGE_CONTROLLER;
-        try{
-            //get cookies
-            Cookie[] listCookie = request.getCookies();
-            if(listCookie != null){
-                Cookie cookie = listCookie[listCookie.length - 1];
-                String username = cookie.getName();
-                String password = cookie.getValue();
-                //check login with name and value of cookie
-                AccountDAO accountDAO = new AccountDAO();
-                boolean result = accountDAO.checkLogin(username, password);
-                
-                if(result){
-                    AccountDTO accountDTO = accountDAO.getAccount(username); 
-                    //check role
-                    if (accountDTO.getRole() == 1) {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("ADMIN_ROLE", accountDTO);
-                        url = Constant.Controller.STAFF_HOME_PAGE_CONTROLLER;
-                    } else {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("USER_ROLE", accountDTO);
+        String url = Constant.Page.SIGN_IN_PAGE;
+        HttpSession session = request.getSession(false);
+        try {
+            if (session != null) {
+                AccountDTO accountDTO = (AccountDTO) session.getAttribute("ADMIN_ROLE");
+                if (accountDTO != null) {
+                    ProductDAO dao = new ProductDAO();
+                    List<ProductDTO> list = dao.getAllProduct();
+                    if (!list.isEmpty()) {
+                        request.setAttribute("LIST_PRODUCT", list);
+                        url = Constant.Page.STAFF_HOME_PAGE;
                     }
+                } else {
+                    response.sendRedirect(url);
                 }
+            } else {
+                response.sendRedirect(url);
             }
-        }catch(NamingException ex){
-            log("NamingException at StartUpServlet " + ex.getMessage());
-        }catch(SQLException ex){
-            log("SQLException at StartUpServlet " + ex.getMessage());
-        }finally{
-            response.sendRedirect(url);
+        } catch (Exception e) {
+            log("Error at ShowAllBookServlet " + e.toString());
+        } finally {
+            request.getRequestDispatcher(url).forward(request, response);
         }
     }
 

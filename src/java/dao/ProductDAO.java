@@ -32,6 +32,14 @@ public class ProductDAO implements Serializable {
     private final String SQL_GET_ALL_PRODUCT = "SELECT productId, productName, quantity, price, description, imageUrl, status, categoryId "
                         + "FROM products "
                         + "ORDER BY status DESC";
+    private final String SQL_GET_PRODUCT_BY_ID = "SELECT productId, productName, quantity, price, description, imageUrl, status, categoryId "
+                        + "FROM products "
+                        + "WHERE productId = ? ";
+    
+    private final String SQL_GET_CATEGORY_BY_ID = "SELECT categoryId, categoryName, description "
+                        + "FROM categories "
+                        + "WHERE categoryId = ? ";
+    
 //    public boolean updateStatusBook(String bookID)
 //            throws SQLException, NamingException {
 //        boolean check = false;
@@ -222,42 +230,76 @@ public class ProductDAO implements Serializable {
 //        return listBook;
 //    }
 //
-//    public ProductDTO GetBookByBookID(String bookID) throws SQLException, NamingException {
-//        Connection con = null;
-//        PreparedStatement stm = null;
-//        ResultSet rs = null;
-//        try {
-//            con = DBHepler.makeConnection();
-//            if (con != null) {
-//                String sql = "SELECT bookID, bookName, imagePath, quantity, price, status "
-//                        + "FROM tblBook "
-//                        + "WHERE bookID = ? ";
-//                stm = con.prepareStatement(sql);
-//                stm.setString(1, bookID);
-//                rs = stm.executeQuery();
-//                if (rs.next()) {
-//                    String bookName = rs.getString("bookName");
-//                    String imagePath = rs.getString("imagePath");
-//                    int quantity = rs.getInt("quantity");
-//                    double price = rs.getDouble("price");
-//                    boolean status = rs.getBoolean("status");
-//                    TblBookDTO bookDTO = new ProductDTO(bookID, bookName, imagePath, quantity, price, status);
-//                    return bookDTO;
-//                }
-//            }
-//        } finally {
-//            if (rs != null) {
-//                rs.close();
-//            }
-//            if (stm != null) {
-//                stm.close();
-//            }
-//            if (con != null) {
-//                con.close();
-//            }
-//        }
-//        return null;
-//    }
+    public ProductDTO getProductById(int productId) throws SQLException, NamingException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try {
+            con = DBHepler.makeConnection();
+            if (con != null) {
+                String sql = SQL_GET_PRODUCT_BY_ID;
+                stm = con.prepareStatement(sql);
+                stm.setInt(1, productId);
+                rs = stm.executeQuery();
+                if (rs.next()) {
+                    String productName = rs.getString("productName");;
+                    int quantity = rs.getInt("quantity");;
+                    int price = rs.getInt("price");
+                    String description = rs.getString("description");
+                    String imageUrl = rs.getString("imageUrl");
+                    boolean status = rs.getBoolean("status");
+                    int categoryID = rs.getInt("categoryId");
+                    CategoryDTO category = getCategoryById(categoryID);
+                    ProductDTO productDTO = new ProductDTO(productId, productName, quantity, price, description, imageUrl, status, category);
+                    return productDTO;
+                }
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
+    
+    private CategoryDTO getCategoryById(int categoryId) throws NamingException, SQLException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        List<ProductDTO> listProduct = null;
+        try {
+            if (con == null) {
+                con = DBHepler.makeConnection();
+            }            
+                String sql = SQL_GET_CATEGORY_BY_ID;
+                stm = con.prepareStatement(sql);
+                stm.setInt(1, categoryId);
+                rs = stm.executeQuery();
+                if (rs.next()) {
+                    String categoryName = rs.getString("categoryName");
+                    String description = rs.getString("description");
+                    CategoryDTO categoryDTO = new CategoryDTO(categoryId, categoryName, description);
+                    return categoryDTO;
+                }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return null;
+    }
 
     public List<ProductDTO> getAllProduct() throws NamingException, SQLException {
         Connection con = null;
@@ -273,13 +315,13 @@ public class ProductDAO implements Serializable {
                 while (rs.next()) {
                     int productId = rs.getInt("productId");
                     String productName = rs.getString("productName");;
-                    String quantity = rs.getString("quantity");;
+                    int quantity = rs.getInt("quantity");;
                     int price = rs.getInt("price");
                     String description = rs.getString("description");
                     String imageUrl = rs.getString("imageUrl");
                     boolean status = rs.getBoolean("status");
                     int categoryID = rs.getInt("categoryId");
-                    CategoryDTO category = new CategoryDTO(categoryID, "", "");
+                    CategoryDTO category = getCategoryById(categoryID);
                     if (listProduct == null) {
                         listProduct = new ArrayList<>();
                     }

@@ -16,14 +16,14 @@
     <div class="head sticky-top">
         <c:set var="account" value="${sessionScope.USER_ROLE}"/>
         <div style="width: 100px">
-            <a href="DispatchController?btnAction=HomePage">
+            <a href="DispatchController?btnAction=UserHomePage">
                 <img src="image/logo.png" alt="" class="image" style="width: 100%; height: 100%">  
             </a>
         </div>
         <!--            <font class="link">My Book Store</font>-->
         <c:if test="${not empty account}">
             <div class="user">
-                <a class="link" href="DispatchController?btnAction=ShowProfile"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" fill="currentColor"
+                <a class="link" href="DispatchController?btnAction=UserProfile"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" fill="currentColor"
                                                                                      class="bi bi-person-lines-fill" viewBox="0 0 16 16">
                     <path
                         d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z" />
@@ -31,23 +31,23 @@
                     ${account.fullName}
                 </a>
 
-                <a class="link" href="DispatchController?btnAction=Logout">Log out</a>
+                <a class="link" href="DispatchController?btnAction=LogOut">Log out</a>
             </div>
         </c:if>
         <c:if test="${empty account}">
             <div class="user">
-                <label class="link" href="login.jsp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" fill="currentColor"
+                <label class="link" href="signin.jsp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" fill="currentColor"
                                                           class="bi bi-person-lines-fill" viewBox="0 0 16 16">
                     <path
                         d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z" />
                     </svg>
                     User
                 </label>
-                <a class="link" href="login.jsp">Log in</a>
+                <a class="link" href="signin.jsp">Log in</a>
             </div>
         </c:if>
 
-        <a class="link" href="DispatchController?btnAction=ShowCartAsUser">            
+        <a class="link" href="DispatchController?btnAction=UserShowCart">            
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" fill="currentColor" class="bi bi-cart3"
                  viewBox="0 0 16 16">
             <path
@@ -68,20 +68,20 @@
             <option value="1"<c:if test="${'1' eq rangeSelected}">
                     selected
                 </c:if>>
-                Min - 30$
+                Min - 20$
             </option>
             <option value="2"<c:if test="${'2' eq rangeSelected}">
                     selected
                 </c:if>>
-                30$ - 60$
+                20$ - 50$
             </option>
             <option value="3"<c:if test="${'3' eq rangeSelected}">
                     selected
                 </c:if>>
-                60$ Above
+                50$ Above
             </option>
         </select>
-        <button name="btnAction" value="SearchAsUser" class="btn btn-primary childSearch">Search</button>
+        <button name="btnAction" value="UserSearchProduct" class="btn btn-primary childSearch">Search</button>
     </form>
     <div class="numberResult">
         <c:set var="numberResult" value="${requestScope.NUMBER_RESULT}"/>
@@ -94,7 +94,7 @@
         <c:if test="${not empty msg}">
             <h5 class="text-success">
                 ${msg}
-                <a href="DispatchController?btnAction=ShowCartAsUser">Click to view your cart</a>
+                <a href="DispatchController?btnAction=UserShowCart">Click to view your cart</a>
             </h5>
         </c:if>
     </div>
@@ -102,7 +102,7 @@
         <h5>
             This search does not has result            
         </h5>
-        <a href="DispatchController?btnAction=ShowListBookAsUser" class="btn btn-primary">Show all book</a>
+        <a href="DispatchController?btnAction=UserHomePage" class="btn btn-primary">Show all book</a>
     </c:if>
     <%--<c:set var="numberBook" value="${requestScope.NUMBER_BOOK}"/>--%>
 
@@ -125,21 +125,24 @@
                         <li class="list-group-item">
                             Price: <font style="font-weight: 750;">${productDTO.price}$</font>
                         </li>
+                        <li class="list-group-item">
+                            Category: <font style="font-weight: 750;">${productDTO.category.categoryName}</font>
+                        </li>
                         <c:if test="${productDTO.status eq 'true'}">
-                            <li class="list-group-item" style="color: green;font-weight: 500;">Ready</li>
+                            <li class="list-group-item" style="color: green;font-weight: 500;">Available</li>
                             </c:if>
                             <c:if test="${productDTO.status eq 'false'}">
-                            <li class="list-group-item" style="color: red;font-weight: 500;">Not Ready</li>
+                            <li class="list-group-item" style="color: red;font-weight: 500;">Unavailable</li>
                             </c:if>
                     </ul>
-                    <input type="hidden" name="bookID" value="${productDTO.productId}" />
+                    <input type="hidden" name="productId" value="${productDTO.productId}" />
                     <input type="hidden" name="txtSearchValue" value="${param.txtSearchValue}" />
                     <input type="hidden" name="range" value="${param.range}" />
                     <div class="card-body">
                         <button <c:if test="${productDTO.status eq 'false' or productDTO.quantity lt '1'}">
                                 disabled
                             </c:if>
-                            class="btn btn-outline-primary" name="btnAction" value="AddToCartAsUser">Add to card</button>
+                            class="btn btn-outline-primary" name="btnAction" value="UserAddToCart">Add to card</button>
                     </div>
                 </div>
             </form>   
@@ -147,7 +150,7 @@
     </div>
     <div style="margin-bottom: 50px">
         <c:if test="${numberResult lt numberBook and numberResult ne '0'}">
-            <a href="DispatchController?btnAction=ShowListBookAsUser" class="btn btn-primary">Show all book</a>
+            <a href="DispatchController?btnAction=UserHomePage" class="btn btn-primary">Show all book</a>
         </c:if>
     </div>
 </body>

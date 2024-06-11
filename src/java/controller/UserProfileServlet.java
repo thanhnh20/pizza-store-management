@@ -5,11 +5,16 @@
  */
 package controller;
 
-import dao.ProductDAO;
+
+import constants.Constant;
+import dao.CustomerDAO;
 import dto.AccountDTO;
+import dto.CustomerDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.sql.SQLException;
+import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -21,10 +26,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author ASUS
  */
-@WebServlet(name = "ShowAllProductServlet", urlPatterns = {"/ShowAllProductServlet"})
-public class ShowAllProductServlet extends HttpServlet {
-    private final String ERROR = "adminListBook.jsp";
-    private final String SUCCESS = "adminListBook.jsp";
+@WebServlet(name = "UserProfileServlet", urlPatterns = {"/UserProfileServlet"})
+public class UserProfileServlet extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,28 +40,31 @@ public class ShowAllProductServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = ERROR;
+        
         HttpSession session = request.getSession(false);
-        try {
-            if (session != null) {
-                AccountDTO accountDTO = (AccountDTO) session.getAttribute("ADMIN_ROLE");
+        String url = Constant.Page.SIGN_IN_PAGE;
+        try{
+            if(session != null){
+                AccountDTO accountDTO = (AccountDTO) session.getAttribute("USER_ROLE");
                 if (accountDTO != null) {
-                    ProductDAO dao = new ProductDAO();
-//                    List<AccountDTO> list = dao.showAllBookByName();
-//                    if (!list.isEmpty()) {
-//                        request.setAttribute("LIST_BOOK", list);
-//                        url = SUCCESS;
-//                    }
-                } else {
+                    CustomerDAO userDAO = new CustomerDAO();
+                    CustomerDTO user = userDAO.getCustomerByAccountId(accountDTO.getAccountId());
+                    request.setAttribute("USER_PROFILE", user);
+                    url = Constant.Page.USER_PROFILE_PAGE;
+                    RequestDispatcher rd = request.getRequestDispatcher(url);
+                    rd.forward(request, response);
+                }else{
                     response.sendRedirect(url);
                 }
-            } else {
+            }else{
                 response.sendRedirect(url);
             }
-        } catch (Exception e) {
-            log("Error at ShowAllBookServlet " + e.toString());
-        } finally {
-            request.getRequestDispatcher(url).forward(request, response);
+        }catch(NamingException ex){
+            log("NamingException at ShowUserProfileServlet " + ex.getMessage());
+        }catch(SQLException ex){
+            log("SQLException at ShowUserProfileServlet " + ex.getMessage());
+        }finally{
+            
         }
     }
 

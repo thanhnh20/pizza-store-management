@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class ProductDTO implements Serializable{
     private int productId;
     private String productName;
-    private String quantity;
+    private int quantity;
     private int price; 
     private String description;
     private String imageUrl;
@@ -24,7 +24,7 @@ public class ProductDTO implements Serializable{
     public ProductDTO() {
     }
 
-    public ProductDTO(int productId, String productName, String quantity, int price, String description, String imageUrl, boolean status, CategoryDTO category) {
+    public ProductDTO(int productId, String productName, int quantity, int price, String description, String imageUrl, boolean status, CategoryDTO category) {
         this.productId = productId;
         this.productName = productName;
         this.quantity = quantity;
@@ -51,11 +51,11 @@ public class ProductDTO implements Serializable{
         this.productName = productName;
     }
 
-    public String getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

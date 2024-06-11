@@ -6,12 +6,8 @@
 package controller;
 
 import constants.Constant;
-import dao.AccountDAO;
-import dto.AccountDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -24,9 +20,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author ASUS
  */
-@WebServlet(name = "StartUpServlet", urlPatterns = {"/StartUpServlet"})
-public class StartUpServlet extends HttpServlet {
-    
+@WebServlet(name = "LogoutServlet", urlPatterns = {"/LogoutServlet"})
+public class LogoutServlet extends HttpServlet {
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -39,35 +34,19 @@ public class StartUpServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = Constant.Controller.USER_HOME_PAGE_CONTROLLER;
+        
+        String url = Constant.Page.SIGN_IN_PAGE;
         try{
-            //get cookies
-            Cookie[] listCookie = request.getCookies();
-            if(listCookie != null){
-                Cookie cookie = listCookie[listCookie.length - 1];
-                String username = cookie.getName();
-                String password = cookie.getValue();
-                //check login with name and value of cookie
-                AccountDAO accountDAO = new AccountDAO();
-                boolean result = accountDAO.checkLogin(username, password);
-                
-                if(result){
-                    AccountDTO accountDTO = accountDAO.getAccount(username); 
-                    //check role
-                    if (accountDTO.getRole() == 1) {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("ADMIN_ROLE", accountDTO);
-                        url = Constant.Controller.STAFF_HOME_PAGE_CONTROLLER;
-                    } else {
-                        HttpSession session = request.getSession();
-                        session.setAttribute("USER_ROLE", accountDTO);
-                    }
+            HttpSession session = request.getSession(false);
+            if(session != null){
+                session.invalidate();
+                Cookie[] cookies = request.getCookies();
+                if(cookies != null){
+                    Cookie lastCookie = cookies[cookies.length - 1];
+                    lastCookie.setValue("");
+                    response.addCookie(lastCookie);
                 }
             }
-        }catch(NamingException ex){
-            log("NamingException at StartUpServlet " + ex.getMessage());
-        }catch(SQLException ex){
-            log("SQLException at StartUpServlet " + ex.getMessage());
         }finally{
             response.sendRedirect(url);
         }

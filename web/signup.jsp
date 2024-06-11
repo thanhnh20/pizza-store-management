@@ -18,7 +18,7 @@
     <body class="text-center">
         <div class="form">
             <div>
-                <a href="DispatchController?btnAction=HomePage">
+                <a href="DispatchController?btnAction=UserHomePage">
                     <img src="image/logo.png" alt="" width="140px" height="140px"> <br>
                 </a>
             </div>
@@ -66,10 +66,10 @@
                     </c:if>
                 </div>
                 <div class="acction">
-                    <button name="btnAction" value="Register" class="btn btn-outline-primary" type="submit">
+                    <button name="btnAction" value="SignUp" class="btn btn-outline-primary" type="submit">
                         Sign Up
                     </button>
-                    <a href="login.jsp" class="btn btn-outline-danger" type="submit">
+                    <a href="signin.jsp" class="btn btn-outline-danger" type="submit">
                         Sign In
                     </a>
                 </div>
