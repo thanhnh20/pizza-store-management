@@ -46,7 +46,6 @@ public class SignInServlet extends HttpServlet {
         String username = request.getParameter("txtUsername");
         String password = request.getParameter("txtPassword");
         String checkRemember = request.getParameter("checkRemember");
-        System.out.println(username + "\n" + password);
                 
         String url = Constant.Page.SIGN_IN_PAGE;
         try {

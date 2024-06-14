@@ -6,8 +6,10 @@
 package controller;
 
 import constants.Constant;
+import dao.CategoryDAO;
 import dao.ProductDAO;
 import dto.AccountDTO;
+import dto.CategoryDTO;
 import dto.ProductDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,17 +46,16 @@ public class StaffHomePageServlet extends HttpServlet {
                 AccountDTO accountDTO = (AccountDTO) session.getAttribute("ADMIN_ROLE");
                 if (accountDTO != null) {
                     ProductDAO dao = new ProductDAO();
-                    List<ProductDTO> list = dao.getAllProduct();
+                    List<ProductDTO> list = dao.searchProductByName("");
+                    CategoryDAO cateDAO = new CategoryDAO();
+                    List<CategoryDTO> listCate = cateDAO.getAllCategory();
                     if (!list.isEmpty()) {
                         request.setAttribute("LIST_PRODUCT", list);
+                        request.setAttribute("LIST_CATEGORY", listCate);
                         url = Constant.Page.STAFF_HOME_PAGE;
                     }
-                } else {
-                    response.sendRedirect(url);
-                }
-            } else {
-                response.sendRedirect(url);
-            }
+                } 
+            } 
         } catch (Exception e) {
             log("Error at ShowAllBookServlet " + e.toString());
         } finally {

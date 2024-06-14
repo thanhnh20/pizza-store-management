@@ -17,6 +17,12 @@ public class Constant {
         public static final String STAFF_HOME_PAGE = "staffHomePage.jsp";
         public static final String USER_PROFILE_PAGE  = "userProfile.jsp";
         public static final String CART_PAGE = "cart.jsp";
+        public static final String STAFF_CREATE_PRODUCT_PAGE = "addNewProduct.jsp";
+        public static final String STAFF_USER_MANAGEMENT_PAGE = "staffListUser.jsp";
+        public static final String STAFF_ORDER_MANAGEMENT_PAGE = "staffListOrder.jsp";
+        public static final String STAFF_ORDER_DETAIL_PAGE = "staffOrderDetail.jsp";
+        public static final String USER_ORDERS_HISTORY_PAGE = "userOrdersHistory.jsp";
+        public static final String USER_ORDER_DETAIL_PAGE = "userOrderDetail.jsp";
     }
     
     public static class Controller {
@@ -25,6 +31,16 @@ public class Constant {
         public static final String SIGN_UP_CONTROLLER = "SignUpServlet";
         public static final String LOG_OUT_CONTROLLER = "LogoutServlet";
         public static final String STAFF_HOME_PAGE_CONTROLLER = "StaffHomePageServlet";
+        public static final String STAFF_CREATE_PRODUCT_CONTROLLER = "StaffCreateProductServlet";
+        public static final String STAFF_SEARCH_PRODUCT_CONTROLLER = "StaffSearchProductServlet";
+        public static final String STAFF_UPDATE_PRODUCT_CONTROLLER = "StaffUpdateProductServlet";
+        public static final String STAFF_SHOW_USERS_CONTROLLER = "StaffShowUsersServlet";
+        public static final String STAFF_UPDATE_USER_CONTROLLER = "StaffUpdateUserServlet";
+        public static final String STAFF_SEARCH_USER_CONTROLLER = "StaffSearchUserServlet";
+        public static final String STAFF_SHOW_ORDERS_CONTROLLER = "StaffShowOrdersServlet";
+        public static final String STAFF_SEARCH_ORDERS_CONTROLLER = "StaffSearchOrderServlet";
+        public static final String STAFF_DETAIL_ORDER_CONTROLLER = "StaffShowOrderDetailServlet";
+        public static final String STAFF_FINISH_ORDER_CONTROLLER = "StaffFinishOrderServlet";
         
         public static final String USER_HOME_PAGE_CONTROLLER = "UserHomePageServlet";
         public static final String USER_PROFILE_CONTROLLER = "UserProfileServlet";
@@ -34,6 +50,8 @@ public class Constant {
         public static final String USER_SHOW_CART_CONTROLLER = "UserShowCartServlet";
         public static final String USER_REMOVE_ITEMS_CART_CONTROLLER = "UserRemoveItemsCartServlet";
         public static final String USER_CHECK_OUT_CART_CONTROLLER = "UserCheckOutCartServlet";
+        public static final String USER_ORDERS_HISTORY_CONTROLLER = "UserOrdersHistoryServlet";
+        public static final String USER_ORDER_DETAIL_CONTROLLER = "UserOrderDetailServlet";
         
         
     }
@@ -50,5 +68,20 @@ public class Constant {
         public static final String USER_SHOW_CART = "UserShowCart";
         public static final String USER_CHECK_OUT_CART = "UserCheckout";
         public static final String USER_REMOVE_CART = "UserRemoveCart";
+        public static final String USER_ORDERS_HISTORY = "UserOrdersHistory";
+        public static final String USER_ORDER_DETAIL = "Detail";
+        
+        public static final String STAFF_SEARCH_USER = "SearchUser";
+        public static final String STAFF_SHOW_PRODUCT = "StaffShowAllProduct";
+        public static final String STAFF_SEARCH_PRODUCT = "StaffSearchProduct";
+        public static final String STAFF_CREATE_PRODUCT = "CreateProduct";
+        public static final String STAFF_UPDATE_PRODUCT = "UpdateProduct"; 
+        public static final String STAFF_SHOW_USERS = "StaffShowUsers";
+        public static final String STAFF_UPDATE_USER = "Delete User";
+        public static final String STAFF_SHOW_ORDERS = "StaffShowOrders";
+        public static final String STAFF_SEARCH_ORDER = "SearchOrder";
+        public static final String STAFF_DETAIL_ORDER = "Order Detail";
+        public static final String STAFF_FINISH_ORDER = "StaffFinishOrder";
+        
     }
 }

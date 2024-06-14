@@ -20,14 +20,14 @@ public class OrderDTO implements Serializable{
     private Date shippedDate;
     private int amount;
     private int freight;
-    private int shipAddress;
+    private String shipAddress;
     private int status;
     private CustomerDTO customer;
 
     public OrderDTO() {
     }
 
-    public OrderDTO(int orderId, Date orderDate, Date shippedDate, int amount, int freight, int shipAddress, int status, CustomerDTO customer) {
+    public OrderDTO(int orderId, Date orderDate, Date shippedDate, int amount, int freight, String shipAddress, int status, CustomerDTO customer) {
         this.orderId = orderId;
         this.orderDate = orderDate;
         this.shippedDate = shippedDate;
@@ -78,11 +78,11 @@ public class OrderDTO implements Serializable{
         this.freight = freight;
     }
 
-    public int getShipAddress() {
+    public String getShipAddress() {
         return shipAddress;
     }
 
-    public void setShipAddress(int shipAddress) {
+    public void setShipAddress(String shipAddress) {
         this.shipAddress = shipAddress;
     }
 

@@ -63,8 +63,6 @@ public class UserProfileServlet extends HttpServlet {
             log("NamingException at ShowUserProfileServlet " + ex.getMessage());
         }catch(SQLException ex){
             log("SQLException at ShowUserProfileServlet " + ex.getMessage());
-        }finally{
-            
         }
     }
 

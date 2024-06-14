@@ -3,17 +3,32 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/web/userProfile.jsp</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/ShowUserProfileServlet.java</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/dao/AccountDAO.java</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/error/CustomerErrorDTO.java</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/nbproject/build-impl.xml</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/SignInServlet.java</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserSearchProductServlet.java</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/dao/CustomerDAO.java</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/web/homepage.jsp</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StartUpServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffFinishOrderServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserProfileServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffSearchUserServlet.java</file>
             <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/DispatchController.java</file>
-            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UpdateProfileServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffCreateProductServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffSearchOrderServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffSearchProductServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserCheckOutCartServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserShowCartServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/constants/Constant.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffShowUsersServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserSearchProductServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserRemoveItemsCartServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffHomePageServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffShowOrdersServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/SignInServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserAddToCartServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserOrdersHistoryServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/LogoutServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffUpdateProductServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserOrderDetailServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffUpdateUserServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserHomePageServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/StaffShowOrderDetailServlet.java</file>
+            <file>file:/F:/Download/SE151252/Freelancer/pizza%20project/pizza-store-management/src/java/controller/UserUpdateProfileServlet.java</file>
         </group>
     </open-files>
 </project-private>

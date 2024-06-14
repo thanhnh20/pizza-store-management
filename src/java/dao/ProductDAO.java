@@ -40,6 +40,24 @@ public class ProductDAO implements Serializable {
                         + "FROM categories "
                         + "WHERE categoryId = ? ";
     
+    private final String SQL_UPDATE_BOOK = "Update products Set "
+            + "productName = ?, "
+            + "quantity = ?, "
+            + "price = ?, "
+            + "description = ?, "
+            + "imageUrl = ?, "
+            + "status = ?, "
+            + "categoryId = ? "
+            + "Where productId = ?";
+    
+    private final String SQL_SEARCH_BOOK_BY_NAME = " Select productId, productName, quantity, price, description, imageUrl, status, categoryId "
+            + "From products "
+            + "Where productName like ?";
+
+    private final String SQL_INSERT_BOOK = " Insert Into products(productName, quantity, price, description, imageUrl, status, categoryId) "
+            + "Values (?,?,?,?,?,?,?)";
+
+    
 //    public boolean updateStatusBook(String bookID)
 //            throws SQLException, NamingException {
 //        boolean check = false;
@@ -67,70 +85,76 @@ public class ProductDAO implements Serializable {
 //        return check;
 //    }
 //    
-//    public List<TblBookDTO> searchBookByName(String searchBookName)
-//            throws SQLException, NamingException {
-//        Connection con = null;
-//        PreparedStatement stm = null;
-//        ResultSet rs = null;
-//        List<TblBookDTO> listBook = new ArrayList<>();
-//        try {
-//            con = DBHepler.makeConnection();
-//            if (con != null) {
-//                stm = con.prepareStatement(SEARCH_BOOK_BY_NAME);
-//                stm.setString(1, "%" + searchBookName + "%");
-//                rs = stm.executeQuery();
-//                while (rs.next()) {
-//                    String bookID = rs.getString("bookID");
-//                    String bookName = rs.getString("bookName");
-//                    String imagePath = rs.getString("imagePath");
-//                    int quantity = rs.getInt("quantity");
-//                    double price = rs.getDouble("price");
-//                    boolean status = rs.getBoolean("status");
-//                    listBook.add(new TblBookDTO(bookID, bookName, imagePath, quantity, price, status));
-//                }
-//            }
-//        } finally {
-//            if (rs != null) {
-//                rs.close();
-//            }
-//            if (stm != null) {
-//                stm.close();
-//            }
-//            if (con != null) {
-//                con.close();
-//            }
-//
-//        }
-//        return listBook;
-//    }
-//
-//    public boolean updateBook(TblBookDTO dtoBook)
-//            throws SQLException, NamingException {
-//        boolean check = false;
-//        Connection con = null;
-//        PreparedStatement stm = null;
-//        try {
-//            con = DBHepler.makeConnection();
-//            if (con != null) {
-//                stm = con.prepareStatement(UPDATE_BOOK);
-//                stm.setString(1, dtoBook.getBookName());
-//                stm.setString(2, dtoBook.getImagePath());
-//                stm.setInt(3, dtoBook.getQuantity());
-//                stm.setDouble(4, dtoBook.getPrice());
-//                stm.setBoolean(5, dtoBook.isStatus());
-//                stm.setString(6, dtoBook.getBookID());
-//                check = stm.executeUpdate() > 0;
-//            }
-//        } finally {
-//            if (stm != null) {
-//                stm.close();
-//            }
-//            if (con != null) {
-//                con.close();
-//            }
-//        }
-//        return check;
-//    }
+    public List<ProductDTO> searchProductByName(String searchValue)
+            throws SQLException, NamingException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        List<ProductDTO> listProduct = new ArrayList<>();
+        try {
+            con = DBHepler.makeConnection();
+            if (con != null) {
+                stm = con.prepareStatement(SQL_SEARCH_BOOK_BY_NAME);
+                stm.setString(1, "%" + searchValue + "%");
+                rs = stm.executeQuery();
+                while (rs.next()) {
+                    int productId = rs.getInt("productId");
+                    String productName = rs.getString("productName");;
+                    int quantity = rs.getInt("quantity");;
+                    int price = rs.getInt("price");
+                    String description = rs.getString("description");
+                    String imageUrl = rs.getString("imageUrl");
+                    boolean status = rs.getBoolean("status");
+                    int categoryID = rs.getInt("categoryId");
+                    CategoryDTO category = getCategoryById(categoryID);       
+                    ProductDTO dto = new ProductDTO(productId, productName, quantity, price, description, imageUrl, status, category);
+                    listProduct.add(dto);
+                }       
+            }
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+
+        }
+        return listProduct;
+    }
+
+    public boolean updateProduct(ProductDTO productDTO)
+            throws SQLException, NamingException {
+        boolean check = false;
+        Connection con = null;
+        PreparedStatement stm = null;
+        try {
+            con = DBHepler.makeConnection();
+            if (con != null) {
+                stm = con.prepareStatement(SQL_UPDATE_BOOK);
+                stm.setString(1, productDTO.getProductName());
+                stm.setInt(2, productDTO.getQuantity());
+                stm.setInt(3, productDTO.getPrice());
+                stm.setString(4, productDTO.getDescription());
+                stm.setString(5, productDTO.getImageUrl());
+                stm.setBoolean(6, productDTO.isStatus());
+                stm.setInt(7, productDTO.getCategory().getCategoryId());
+                stm.setInt(8, productDTO.getProductId());
+                check = stm.executeUpdate() > 0;
+            }
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                con.close();
+            }
+        }
+        return check;
+    }
 //
 //    public boolean checkDuplicate(String bookID)
 //            throws SQLException, NamingException {
@@ -162,38 +186,36 @@ public class ProductDAO implements Serializable {
 //        return check;
 //    }
 //
-//    public boolean insertBook(TblBookDTO book)
-//            throws SQLException, NamingException {
-//        if (book == null) {
-//            return false;
-//        }
-//        Connection con = null;
-//        PreparedStatement stm = null;
-//        try {
-//            con = DBHepler.makeConnection();
-//            if (con != null) {
-//                stm = con.prepareStatement(INSERT_BOOK);
-//                stm.setString(1, book.getBookID());
-//                stm.setString(2, book.getBookName());
-//                stm.setString(3, book.getImagePath());
-//                stm.setInt(4, book.getQuantity());
-//                stm.setDouble(5, book.getPrice());
-//                stm.setBoolean(6, book.isStatus());
-//                int rowEffect = stm.executeUpdate();
-//                if (rowEffect > 0) {
-//                    return true;
-//                }
-//            }
-//        } finally {
-//            if (stm != null) {
-//                stm.close();
-//            }
-//            if (con != null) {
-//                stm.close();
-//            }
-//        }
-//        return false;
-//    }
+    public boolean insertProduct(ProductDTO product)
+            throws SQLException, NamingException {
+        Connection con = null;
+        PreparedStatement stm = null;
+        try {
+            con = DBHepler.makeConnection();
+            if (con != null) {
+                stm = con.prepareStatement(SQL_INSERT_BOOK);
+                stm.setString(1, product.getProductName());
+                stm.setInt(2, product.getQuantity());
+                stm.setInt(3, product.getPrice());
+                stm.setString(4, product.getDescription());
+                stm.setString(5, product.getImageUrl());
+                stm.setBoolean(6, product.isStatus());
+                stm.setInt(7, product.getCategory().getCategoryId());
+                int rowEffect = stm.executeUpdate();
+                if (rowEffect > 0) {
+                    return true;
+                }
+            }
+        } finally {
+            if (stm != null) {
+                stm.close();
+            }
+            if (con != null) {
+                stm.close();
+            }
+        }
+        return false;
+    }
 
 //    public List<ProductDTO> showAllBookByName()
 //            throws SQLException, NamingException {

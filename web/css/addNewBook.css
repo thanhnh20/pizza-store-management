@@ -23,8 +23,13 @@
 }
 .btn{
     margin-top: 15px;
+    text-align: left;
 }
 
 .error{
     margin-bottom: 20px
+}
+
+.form-control{
+    border-color: black;
 }

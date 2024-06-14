@@ -5,6 +5,7 @@
  */
 package dao;
 
+import dto.OrderDetailDTO;
 import dto.ProductDTO;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -30,6 +31,10 @@ public class OrderDetailDAO implements Serializable {
     
     private final String SQL_INSERT_ORDER_DETAILS = "INSERT INTO order_details(quantity, unitPrice, orderID, productID) "
                             + "VALUES(?, ?, ?, ?) ";
+    
+    private final String SQL_GET_OD_BY_ORDER_ID = "SELECT orderID, productID, quantity, unitPrice "
+                        + "FROM order_details "
+                        + "WHERE orderID = ? ";
     public boolean createOrderDetail(Date orderDate, int customerId, int amount, 
             List<ProductDTO> listProduct) throws SQLException, NamingException {
         Connection con = null;
@@ -80,56 +85,46 @@ public class OrderDetailDAO implements Serializable {
         }
         return false;
     }
-//    
-//    public List<TblOrderDetailDTO> getOrderDetailByOrderID(String orderID) throws NamingException, SQLException{
-//        Connection con = null;
-//        PreparedStatement stm = null;
-//        ResultSet rs = null;
-//        List<TblOrderDetailDTO> listOrderDetail = null;
-//        try{
-//            con = DBHepler.makeConnection();
-//            if(con != null){
-//                String sql = "SELECT bookID, quantity, totalPrice "
-//                        + "FROM tblOrder_Details "
-//                        + "WHERE orderID = ? ";
-//                stm = con.prepareStatement(sql);
-//                stm.setString(1, orderID);
-//                rs = stm.executeQuery();
-//                while(rs.next()){
-//                    String bookID = rs.getString("bookID");
-//
-//                    int quantity = rs.getInt("quantity");
-//                    double totalPrice = rs.getDouble("totalPrice");
-//                    TblOrderDetailDTO orderDetail = new TblOrderDetailDTO();
-//                    
-//                    orderDetail.setQuantity(quantity);
-//                    orderDetail.setTotalPrice(totalPrice);
-//                    
-//                    TblOrderDAO orderDAO = new TblOrderDAO();
-//                    TblOrderDTO orderDTO = orderDAO.getOrderByOrderID(orderID);
-//                    orderDetail.setOrder(orderDTO);
-//                    
-//                    TblBookDAO bookDAO = new TblBookDAO();
-//                    TblBookDTO bookDTO = bookDAO.GetBookByBookID(bookID);
-//                    orderDetail.setBook(bookDTO);
-//                    if(listOrderDetail == null){
-//                        listOrderDetail = new ArrayList<TblOrderDetailDTO>();
-//                    }
-//                    listOrderDetail.add(orderDetail);
-//                }
-//                return listOrderDetail;
-//            }
-//        }finally{
-//            if(rs != null){
-//                rs.close();
-//            }
-//            if(stm != null){
-//                stm.close();
-//            }
-//            if(con != null){
-//                con.close();
-//            }
-//        }
-//        return listOrderDetail;
-//    }
+    public List<OrderDetailDTO> getOrderDetailByOrderID(int orderID) throws NamingException, SQLException{
+        Connection con = null;
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        List<OrderDetailDTO> listOrderDetail = null;
+        try{
+            con = DBHepler.makeConnection();
+            if(con != null){
+                String sql = SQL_GET_OD_BY_ORDER_ID;
+                stm = con.prepareStatement(sql);
+                stm.setInt(1, orderID);
+                rs = stm.executeQuery();
+                while(rs.next()){
+                    int productID = rs.getInt("productID");
+                    int quantity = rs.getInt("quantity");
+                    int unitPrice = rs.getInt("unitPrice");
+                    
+                    ProductDAO productDAO = new ProductDAO();
+                    ProductDTO productDTO =  productDAO.getProductById(productID);
+                    
+                    OrderDetailDTO orderDetailDTO = new OrderDetailDTO(orderID, productDTO, quantity, unitPrice);
+                    
+                    if(listOrderDetail == null){
+                        listOrderDetail = new ArrayList<>();
+                    }
+                    listOrderDetail.add(orderDetailDTO);
+                }
+                return listOrderDetail;
+            }
+        }finally{
+            if(rs != null){
+                rs.close();
+            }
+            if(stm != null){
+                stm.close();
+            }
+            if(con != null){
+                con.close();
+            }
+        }
+        return listOrderDetail;
+    }
 }

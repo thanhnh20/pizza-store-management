@@ -22,6 +22,10 @@ public class CategoryDTO {
         this.categoryName = categoryName;
         this.description = description;
     }
+    
+    public CategoryDTO(int categoryId) {
+        this.categoryId = categoryId;
+    }
 
     public int getCategoryId() {
         return categoryId;

@@ -85,6 +85,58 @@ public class DispatchController extends HttpServlet {
                     url = Constant.Controller.USER_CHECK_OUT_CART_CONTROLLER;
                     break;
                 }
+                case Constant.Action.STAFF_UPDATE_PRODUCT: {
+                    url = Constant.Controller.STAFF_UPDATE_PRODUCT_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_SHOW_PRODUCT: {
+                    url = Constant.Controller.STAFF_HOME_PAGE_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_SEARCH_PRODUCT: {
+                    url = Constant.Controller.STAFF_SEARCH_PRODUCT_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_CREATE_PRODUCT: {
+                    url = Constant.Controller.STAFF_CREATE_PRODUCT_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_SHOW_USERS: {
+                    url = Constant.Controller.STAFF_SHOW_USERS_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_UPDATE_USER: {
+                    url = Constant.Controller.STAFF_UPDATE_USER_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_SEARCH_USER: {
+                    url = Constant.Controller.STAFF_SEARCH_USER_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_SHOW_ORDERS: {
+                    url = Constant.Controller.STAFF_SHOW_ORDERS_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_SEARCH_ORDER: {
+                    url = Constant.Controller.STAFF_SEARCH_ORDERS_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_DETAIL_ORDER: {
+                    url = Constant.Controller.STAFF_DETAIL_ORDER_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.STAFF_FINISH_ORDER: {
+                    url = Constant.Controller.STAFF_FINISH_ORDER_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.USER_ORDERS_HISTORY: {
+                    url = Constant.Controller.USER_ORDERS_HISTORY_CONTROLLER;
+                    break;
+                }
+                case Constant.Action.USER_ORDER_DETAIL: {
+                    url = Constant.Controller.USER_ORDER_DETAIL_CONTROLLER;
+                    break;
+                }
                 default :{
                     url = Constant.Controller.START_UP_CONTROLLER;
                 }

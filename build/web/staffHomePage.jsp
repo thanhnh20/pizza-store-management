@@ -21,7 +21,7 @@
         <div class="head sticky-top">
             <div style="width: 100px">
                 <a href="DispatchController?btnAction=ShowAllBook">
-                    <img src="image/Pngtre.png" alt="" class="image" style="width: 100%">  
+                    <img src="image/logo.png" alt="" class="image" style="width: 100%; height: 100%">  
                 </a>
             </div>
             <div class="admin">
@@ -33,27 +33,32 @@
                     Admin</label>
                 <a class="link" href="DispatchController?btnAction=LogOut">Log out</a>
             </div>
-            <a class="link" href="DispatchController?btnAction=ShowListUser">
+            <a class="link" href="DispatchController?btnAction=StaffShowUsers">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-list-ul"
                      viewBox="0 0 16 16">
                 <path fill-rule="evenodd"
                       d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
                 </svg>
-                List User
+                User management
+            </a>
+            <a class="link" href="DispatchController?btnAction=StaffShowOrders">
+                
+                Order management
             </a>
         </div>
 
         <%-- --%>
         <form class="search" action="DispatchController">
             <input type="text" class="form-control" name="searchValue" value="${param.searchValue}" placeholder="Search Name Book"/>
-            <button class="btn btn-primary" type="submit" name="btnAction" value="SearchBook" placeholder="Search Name Book">Search</button>
+            <button class="btn btn-primary" type="submit" name="btnAction" value="StaffSearchProduct" placeholder="Search Name Book">Search</button>
         </form>
         <c:set var="listProduct" value="${requestScope.LIST_PRODUCT}"/>
+        <c:set var="listCategory" value="${requestScope.LIST_CATEGORY}"/>
         <c:if test="${empty listProduct}">
             <h5 style="margin: 20px">
                 This search does not has result            
             </h5>
-            <a href="DispatchController?btnAction=ShowAllBook" class="btn btn-primary" type="submit" name="btnAction" value="ShowAllBook">
+            <a href="DispatchController?btnAction=StaffShowAllProduct" class="btn btn-primary" type="submit" name="btnAction" value="StaffShowAllProduct">
                 List All Book
             </a>
         </c:if>
@@ -79,6 +84,7 @@
                             <th>Quantity</th>
                             <th>Price</th>
                             <th>Description</th>
+                            <th>Category</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -91,7 +97,7 @@
                                     ${productDTO.productId}
                                 </td>
                                 <td>
-                                    <input class="form-control text-center" required type="text" name="txtBookName" value="${productDTO.productName}"/>
+                                    <input class="form-control text-center" required type="text" name="txtProductName" value="${productDTO.productName}"/>
                                 </td>
                                 <td>
                                     <input class="form-control text-center" required style="width: 80px; margin: auto"  type="text" pattern="[0-9]+" name="txtQuantity" value="${productDTO.quantity}"/>
@@ -102,6 +108,20 @@
                                 <td>
                                     <input class="form-control text-center" required type="text" name="txtBookName" value="${productDTO.description}"/>
                                 </td>
+                                
+                                <td>
+                                    <select name="category" class="form-control text-center btn " aria-label="Default select example">
+                                        <c:forEach var="categoryDTO" items="${listCategory}" varStatus="count">
+                                            <option class="btn btn-success" <c:if test="${productDTO.category.categoryId eq categoryDTO.categoryId}">
+                                                    selected
+                                                </c:if>
+                                                value="${categoryDTO.categoryId}">
+                                                ${categoryDTO.categoryName}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </td>
+                                
                                 <td>
                                     <select name="status" class="form-control text-center btn <c:if test="${productDTO.status eq 'false'}">
                                             btn-danger
@@ -109,24 +129,26 @@
                                         <c:if test="${productDTO.status eq 'true'}">
                                             btn-success
                                         </c:if>" aria-label="Default select example">
+                                        
                                         <option class="btn btn-success" <c:if test="${productDTO.status eq 'true'}">
                                                 selected
                                             </c:if>
                                             value="true">
-                                            Ready
+                                            Available
                                         </option>
+                                        
                                         <option class="btn btn-danger" <c:if test="${productDTO.status eq 'false'}">
                                                 selected
                                             </c:if>
                                             value="false">
-                                            Not ready
+                                            Unavailable
                                         </option>
                                     </select>
                                 </td>
                                 <td>
                                     <input type="hidden" name="searchValue" value="${requestScope.searchValue}"/>
-                                    <input type="hidden" name="txtBookID" value="${productDTO.productId}"/>
-                                    <input class="btn btn-outline-primary" type="submit" name="btnAction" value="UpdateBook" />      
+                                    <input type="hidden" name="txtProductId" value="${productDTO.productId}"/>
+                                    <input class="btn btn-outline-primary" type="submit" name="btnAction" value="UpdateProduct" />      
                                 </td>
                             </tr>
                         </form>
@@ -135,7 +157,7 @@
                 </table>
             </div>
             <div style="margin: 20px 0 50px">
-                <a class="btn btn-outline-primary" href="addNewBook.html">Add New Product</a>
+                <a class="btn btn-outline-primary" href="addNewProduct.html">Add New Product</a>
             </div>
         </c:if>
 
